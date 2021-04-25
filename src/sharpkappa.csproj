@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AsyncAwaitBestPractices" Version="5.1.0"/>
+    <PackageReference Include="AsyncAwaitBestPractices" Version="5.1.0" />
+    <PackageReference Include="System.Data.Sqlite" Version="1.0.113.7" />
   </ItemGroup>
 </Project>
