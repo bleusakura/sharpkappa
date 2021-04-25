@@ -1,12 +1,12 @@
 using System;
 
-public struct chatMessage {
+public struct ChatMessage {
     public string username { get; }
     public string message { get; }
     public DateTime timestamp { get; }
     public string channel { get; }
 
-    public chatMessage(string username, string message, string currentChannel) {
+    public ChatMessage(string username, string message, string currentChannel) {
         this.username = username;
         this.message = message;
         this.channel = currentChannel.ToLower();

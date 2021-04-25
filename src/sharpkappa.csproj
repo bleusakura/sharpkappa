@@ -6,5 +6,6 @@
   <ItemGroup>
     <PackageReference Include="AsyncAwaitBestPractices" Version="5.1.0" />
     <PackageReference Include="System.Data.Sqlite" Version="1.0.113.7" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
   </ItemGroup>
 </Project>

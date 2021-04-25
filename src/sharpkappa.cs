@@ -17,7 +17,7 @@ namespace sharpkappa
         private StreamReader streamReader;
         private StreamWriter streamWriter;
         private string currentChannel = "";
-        private chatDatabase channelChatDatabase;
+        private ChatDatabase channelChatDatabase;
 
         public sharpkappaBot(string nick, string oauth) {
             this.nick = nick;
@@ -56,9 +56,9 @@ namespace sharpkappa
                     //:messageSenderUsername!messageSenderUsername@messageSenderUsername.tmi.twitch.tv 
                     string username = split[0].Substring(1, split[0].IndexOf("!")-1);
                     string message = line.Substring(line.IndexOf(':', 1)+1);
-                    chatMessage twitchMessage = new chatMessage(username, message, currentChannel);
+                    ChatMessage twitchMessage = new ChatMessage(username, message, currentChannel);
                     channelChatDatabase.appendMessage(twitchMessage);
-                    Console.WriteLine(twitchMessage.ToString());
+                    //Console.WriteLine(twitchMessage.ToString());
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace sharpkappa
             await connected.Task;
             await streamWriter.WriteLineAsync($"JOIN #{channel}");
             currentChannel = channel.ToLower();
-            channelChatDatabase = new chatDatabase(currentChannel);
+            channelChatDatabase = new ChatDatabase(currentChannel);
         }
     }
 }

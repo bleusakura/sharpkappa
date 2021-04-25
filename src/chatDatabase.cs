@@ -3,11 +3,11 @@ using System.IO;
 using System;
 
 namespace sharpkappa {
-    class chatDatabase {
+    class ChatDatabase {
         private SQLiteConnection connection;
         private bool generated = false;
 
-        public chatDatabase(string channel) {
+        public ChatDatabase(string channel) {
             connection = new SQLiteConnection("Data Source=database.sqlite3");
             if(!File.Exists("./database.sqlite3")){
                 SQLiteConnection.CreateFile("database.sqlite3");
@@ -36,7 +36,7 @@ namespace sharpkappa {
             generated = true;
         }
 
-        public void appendMessage(chatMessage chatmessage) {
+        public void appendMessage(ChatMessage chatmessage) {
             if(generated) {
                 openConnection();
                 string query = $"INSERT INTO {chatmessage.channel}(timestamp, username, message, channel) VALUES (@timestamp, @username, @message, @channel)";
