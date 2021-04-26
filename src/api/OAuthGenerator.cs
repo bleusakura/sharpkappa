@@ -1,6 +1,5 @@
 using System;
 using System.Net.Http;
-using System.Configuration;
 
 namespace sharpkappa {
     class OAuthGenerator {
@@ -18,6 +17,9 @@ namespace sharpkappa {
             client_id = Environment.GetEnvironmentVariable("SHARPKAPPA_CLIENTID");
             redirect_uri = "https://localhost";
             response_type = "token";
+
+            // this will be removed once I get the requestOAuthToken() working
+            generatedToken = Environment.GetEnvironmentVariable("SHARPKAPPA_APIOAUTH");
         }
 
         public void requestOAuthToken() {
@@ -38,5 +40,7 @@ namespace sharpkappa {
         }
 
         public string getOAuthToken() { return generatedToken; }
+        
+        public string getClientID() { return client_id; }
     }
 }

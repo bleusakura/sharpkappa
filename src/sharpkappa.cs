@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using AsyncAwaitBestPractices;
 
 namespace sharpkappa
 {
@@ -17,11 +18,15 @@ namespace sharpkappa
         private StreamReader streamReader;
         private StreamWriter streamWriter;
         private string currentChannel = "";
+        private int currentViewerCount = 0;
+        private string currentGame = "";
         private ChatDatabase channelChatDatabase;
+        private TwitchAPI twitchAPI;
 
         public sharpkappaBot(string nick, string oauth) {
             this.nick = nick;
             this.oauth = oauth;
+            twitchAPI = new TwitchAPI();
         }
 
         private bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
@@ -42,10 +47,11 @@ namespace sharpkappa
             connected.SetResult(0);
 
             await joinChannel(channel);
+            refreshStreamsData().SafeFireAndForget();
 
+            string line = "";
             while(true) {
-                string line = await streamReader.ReadLineAsync();
-                //Console.WriteLine(line);
+                line = await streamReader.ReadLineAsync();
 
                 string[] split = line.Split(" ");
                 if(line.StartsWith("PING")) {
@@ -56,7 +62,7 @@ namespace sharpkappa
                     //:messageSenderUsername!messageSenderUsername@messageSenderUsername.tmi.twitch.tv 
                     string username = split[0].Substring(1, split[0].IndexOf("!")-1);
                     string message = line.Substring(line.IndexOf(':', 1)+1);
-                    ChatMessage twitchMessage = new ChatMessage(username, message, currentChannel);
+                    ChatMessage twitchMessage = new ChatMessage(username, message, currentChannel, currentViewerCount, currentGame);
                     channelChatDatabase.appendMessage(twitchMessage);
                     //Console.WriteLine(twitchMessage.ToString());
                 }
@@ -73,6 +79,15 @@ namespace sharpkappa
             await streamWriter.WriteLineAsync($"JOIN #{channel}");
             currentChannel = channel.ToLower();
             channelChatDatabase = new ChatDatabase(currentChannel);
+        }
+
+        public async Task refreshStreamsData() {
+            while(true) {
+                Tuple<string, int> streamData = await twitchAPI.getStreamsData(currentChannel);
+                currentGame = streamData.Item1;
+                currentViewerCount = streamData.Item2;
+                await Task.Delay(TimeSpan.FromMinutes(2));
+            }
         }
     }
 }
