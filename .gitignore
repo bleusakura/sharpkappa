@@ -2,3 +2,4 @@ bin/
 obj/
 .vscode/
 *.sqlite3
+*.config

@@ -2,12 +2,13 @@
 using System.Threading.Tasks;
 using AsyncAwaitBestPractices;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace sharpkappa
 {
     class Program {
         static async Task Main(string[] args) {
-            string oauth = Environment.GetEnvironmentVariable("SHARPKAPPA_OAUTH");
+            string oauth = ConfigurationManager.AppSettings.Get("SHARPKAPPA_OAUTH");
             string botUsername = "sharpkappa";
             List<string> targetChannels = new List<string>();
             List<sharpkappaBot> bots = new List<sharpkappaBot>();

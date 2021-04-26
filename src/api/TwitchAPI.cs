@@ -30,10 +30,17 @@ namespace sharpkappa {
                     response.EnsureSuccessStatusCode();
                     string jsonString = await response.Content.ReadAsStringAsync();
                     JObject jsonObject = JObject.Parse(jsonString);
-                    JToken jData = jsonObject["data"][0];
-                    int viewer_count = (int) jData["viewer_count"];
-                    string game_name = (string) jData["game_name"];
-                    return (new Tuple<string, int>(game_name, viewer_count));
+                    try {
+                        JToken jData = jsonObject["data"][0];
+                        int viewer_count = (int) jData["viewer_count"];
+                        string game_name = (string) jData["game_name"];
+                        return (new Tuple<string, int>(game_name, viewer_count));
+                    }
+                    catch {
+                        int viewer_count = 0;
+                        string game_name = "";
+                        return (new Tuple<string, int>(game_name, viewer_count));
+                    }
                 }
             }
         }
