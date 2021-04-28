@@ -8,9 +8,9 @@ namespace sharpkappa {
         private bool generated = false;
 
         public ChatDatabase(string channel) {
-            connection = new SQLiteConnection("Data Source=database.sqlite3");
-            if(!File.Exists("./database.sqlite3")){
-                SQLiteConnection.CreateFile("database.sqlite3");
+            connection = new SQLiteConnection($"Data Source=data/{channel}_db.sqlite3");
+            if(!File.Exists($"./data/{channel}_db.sqlite3")){
+                SQLiteConnection.CreateFile($"./data/{channel}_db.sqlite3");
             }
             generateChatDatabase(channel);
         }
