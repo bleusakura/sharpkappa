@@ -8,10 +8,19 @@ namespace sharpkappa
 {
     class Program {
         static async Task Main(string[] args) {
+            if(args.Length > 0) {
+                if(args[0] == "--generateAccessToken" || args[0] == "-g") {
+                    TwitchAPI twitchAPI = new TwitchAPI();
+                    string generateAccessToken = await twitchAPI.requestAccessToken();
+                    Console.WriteLine(generateAccessToken);
+                    Console.WriteLine("Place this in App.config for the value for key SHARPKAPPA_ACCESSTOKEN");
+                    System.Environment.Exit(0);
+                }
+            }
             string oauth = ConfigurationManager.AppSettings.Get("SHARPKAPPA_OAUTH");
             string botUsername = "sharpkappa";
             List<string> targetChannels = new List<string>();
-            List<sharpkappaBot> bots = new List<sharpkappaBot>();
+            List<SharpkappaBot> bots = new List<SharpkappaBot>();
 
             if(args.Length > 0) {
                 for(int i = 0; i < args.Length; i++) {
@@ -19,7 +28,7 @@ namespace sharpkappa
                 }
             }
             for(int i = 0; i < targetChannels.Count; i++) {
-                bots.Add(new sharpkappaBot(botUsername, oauth));
+                bots.Add(new SharpkappaBot(botUsername, oauth));
                 bots[i].start(targetChannels[i]).SafeFireAndForget();
             }
             await Task.Delay(-1);

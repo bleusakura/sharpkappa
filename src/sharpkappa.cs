@@ -8,7 +8,7 @@ using AsyncAwaitBestPractices;
 
 namespace sharpkappa
 {
-    public class sharpkappaBot {
+    public class SharpkappaBot {
         const string ip = "irc.chat.twitch.tv";
         const int port = 6697;
         private TaskCompletionSource<int> connected = new TaskCompletionSource<int>();
@@ -23,7 +23,7 @@ namespace sharpkappa
         private ChatDatabase channelChatDatabase;
         private TwitchAPI twitchAPI;
 
-        public sharpkappaBot(string nick, string oauth) {
+        public SharpkappaBot(string nick, string oauth) {
             this.nick = nick;
             this.oauth = oauth;
             twitchAPI = new TwitchAPI();
