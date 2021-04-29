@@ -5,16 +5,11 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
 namespace sharpkappa {
-    class FFZAPI {
-        private static HttpClientHandler hcHandle;
-        private string baseApiUrl;
+    static class FFZAPI {
+        private static HttpClientHandler hcHandle = new HttpClientHandler();
+        private static string baseApiUrl = "https://api.frankerfacez.com/v1";
 
-        public FFZAPI() {
-            hcHandle = new HttpClientHandler();
-            baseApiUrl = "https://api.frankerfacez.com/v1";
-        }
-
-        public async Task<List<string>> getChannelEmotes(string channel) {
+        public static async Task<List<string>> getChannelEmotes(string channel) {
             using(var httpClient = new HttpClient(hcHandle, false)) {
                 using(var response = await httpClient.GetAsync($"{baseApiUrl}/room/{channel}")) {
                     response.EnsureSuccessStatusCode();

@@ -21,12 +21,10 @@ namespace sharpkappa
         private int currentViewerCount = 0;
         private string currentGame = "";
         private ChatDatabase channelChatDatabase;
-        private TwitchAPI twitchAPI;
 
         public SharpkappaBot(string nick, string oauth) {
             this.nick = nick;
             this.oauth = oauth;
-            twitchAPI = new TwitchAPI();
         }
 
         private bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
@@ -83,7 +81,7 @@ namespace sharpkappa
 
         public async Task refreshStreamsData() {
             while(true) {
-                Tuple<string, int> streamData = await twitchAPI.getStreamsData(currentChannel);
+                Tuple<string, int> streamData = await TwitchAPI.getStreamsData(currentChannel);
                 currentGame = streamData.Item1;
                 currentViewerCount = streamData.Item2;
                 await Task.Delay(TimeSpan.FromMinutes(2));

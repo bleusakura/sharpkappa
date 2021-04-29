@@ -6,22 +6,13 @@ using System.Collections.Generic;
 using System.Configuration;
 
 namespace sharpkappa {
-    class TwitchAPI {
-        private static HttpClientHandler hcHandle;
-        private static string access_token;
-        private static string client_id;
-        private static string client_secret;
+    static class TwitchAPI {
+        private static HttpClientHandler hcHandle = new HttpClientHandler();
+        private static string access_token = ConfigurationManager.AppSettings.Get("SHARPKAPPA_ACCESSTOKEN");
+        private static string client_id = ConfigurationManager.AppSettings.Get("SHARPKAPPA_CLIENTID");
+        private static string client_secret = ConfigurationManager.AppSettings.Get("SHARPKAPPA_CLIENTSECRET");
 
-        public TwitchAPI() {
-            hcHandle = new HttpClientHandler();
-
-            //oauthGenerator.requestOAuthToken();
-            client_id = ConfigurationManager.AppSettings.Get("SHARPKAPPA_CLIENTID");
-            client_secret = ConfigurationManager.AppSettings.Get("SHARPKAPPA_CLIENTSECRET");
-            access_token = ConfigurationManager.AppSettings.Get("SHARPKAPPA_ACCESSTOKEN");
-        }
-
-        public async Task<string> requestAccessToken() {
+        public static async Task<string> requestAccessToken() {
             // have to add clause to regenerate expired key
             using (var httpClient = new HttpClient(hcHandle, false)) {
                 List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>();
@@ -47,7 +38,7 @@ namespace sharpkappa {
             }
         }
 
-        public async Task<Tuple<string, int>> getStreamsData(string channel) {
+        public static async Task<Tuple<string, int>> getStreamsData(string channel) {
             using (var httpClient = new HttpClient(hcHandle, false)) {
                 httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);

@@ -10,8 +10,7 @@ namespace sharpkappa
         static async Task Main(string[] args) {
             if(args.Length > 0) {
                 if(args[0] == "--generateAccessToken" || args[0] == "-g") {
-                    TwitchAPI twitchAPI = new TwitchAPI();
-                    string generateAccessToken = await twitchAPI.requestAccessToken();
+                    string generateAccessToken = await TwitchAPI.requestAccessToken();
                     Console.WriteLine(generateAccessToken);
                     Console.WriteLine("Place this in App.config for the value for key SHARPKAPPA_ACCESSTOKEN");
                     System.Environment.Exit(0);
