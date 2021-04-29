@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 namespace sharpkappa {
     class EmoteManager {
-        private List<string> emoteList;
+        private List<Emote> emoteList;
 
         public EmoteManager() {
-            emoteList = new List<string>();
+            emoteList = new List<Emote>();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace sharpkappa
         private StreamReader streamReader;
         private StreamWriter streamWriter;
         private string currentChannel = "";
+        private string channelId = "";
         private int currentViewerCount = 0;
         private string currentGame = "";
         private ChatDatabase channelChatDatabase;
@@ -45,6 +46,7 @@ namespace sharpkappa
             connected.SetResult(0);
 
             await joinChannel(channel);
+            await refreshStreamsData(true);
             refreshStreamsData().SafeFireAndForget();
 
             string line = "";
@@ -79,11 +81,18 @@ namespace sharpkappa
             channelChatDatabase = new ChatDatabase(currentChannel);
         }
 
-        public async Task refreshStreamsData() {
-            while(true) {
-                Tuple<string, int> streamData = await TwitchAPI.getStreamsData(currentChannel);
-                currentGame = streamData.Item1;
-                currentViewerCount = streamData.Item2;
+        public async Task refreshStreamsData(bool prefetch=false) {
+            if(prefetch) {
+                Tuple<string, string, int> streamData = await TwitchAPI.getStreamsData(currentChannel);
+                channelId = streamData.Item1;
+                currentGame = streamData.Item2;
+                currentViewerCount = streamData.Item3;
+            }
+            while(true && !prefetch) {
+                Tuple<string, string, int> streamData = await TwitchAPI.getStreamsData(currentChannel);
+                channelId = streamData.Item1;
+                currentGame = streamData.Item2;
+                currentViewerCount = streamData.Item3;
                 await Task.Delay(TimeSpan.FromMinutes(2));
             }
         }

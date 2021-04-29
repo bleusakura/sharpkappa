@@ -38,7 +38,7 @@ namespace sharpkappa {
             }
         }
 
-        public static async Task<Tuple<string, int>> getStreamsData(string channel) {
+        public static async Task<Tuple<string, string, int>> getStreamsData(string channel) {
             using (var httpClient = new HttpClient(hcHandle, false)) {
                 httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);
@@ -52,12 +52,15 @@ namespace sharpkappa {
                         JToken jData = jsonObject["data"][0];
                         int viewer_count = (int) jData["viewer_count"];
                         string game_name = (string) jData["game_name"];
-                        return (new Tuple<string, int>(game_name, viewer_count));
+                        string user_id = (string) jData["user_id"];
+                        return (new Tuple<string, string, int>(user_id, game_name, viewer_count));
                     }
                     catch {
                         int viewer_count = 0;
                         string game_name = "";
-                        return (new Tuple<string, int>(game_name, viewer_count));
+                        string user_id = "";
+                        Console.WriteLine(DateTime.Now + ": Failed to get streams data from Twitch API");
+                        return (new Tuple<string, string, int>(user_id, game_name, viewer_count));
                     }
                 }
             }
