@@ -65,5 +65,29 @@ namespace sharpkappa {
                 }
             }
         }
+
+        // unofficial api through twitchemotes.com, no new emote api from twitch since legacy atm
+        public static async Task<List<Emote>> getChannelEmotes(string channel_id = "0") {
+            using(var httpClient = new HttpClient()) {
+                using(var response = await httpClient.GetAsync($"https://api.twitchemotes.com/api/v4/channels/{channel_id}")) {
+                    response.EnsureSuccessStatusCode();
+                    string jsonString = await response.Content.ReadAsStringAsync();
+                    JObject jObject = JObject.Parse(jsonString);
+                    try {
+                        List<Emote> emoteList = new List<Emote>();
+                        JArray emotes = (JArray) jObject["emotes"];
+                        foreach(var emote_data in emotes) {
+                            Emote emote = new Emote((string) emote_data["id"], (string) emote_data["code"], "twitch");
+                            emoteList.Add(emote);
+                        }
+                        return emoteList;
+                    }
+                    catch {
+                        Console.WriteLine(DateTime.Now + ": Failed to get emote data from twitchemotes API");
+                        return new List<Emote>();
+                    }
+                }
+            }
+        }
     }
 }
