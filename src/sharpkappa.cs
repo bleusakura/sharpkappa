@@ -22,6 +22,7 @@ namespace sharpkappa
         private int currentViewerCount = 0;
         private string currentGame = "";
         private ChatDatabase channelChatDatabase;
+        private EmoteManager emoteManager;
 
         public SharpkappaBot(string nick, string oauth) {
             this.nick = nick;
@@ -48,6 +49,9 @@ namespace sharpkappa
             await joinChannel(channel);
             await refreshStreamsData(true);
             refreshStreamsData().SafeFireAndForget();
+
+            emoteManager = new EmoteManager(currentChannel, channelId);
+            await emoteManager.start();
 
             string line = "";
             while(true) {
