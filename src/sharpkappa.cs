@@ -42,6 +42,7 @@ namespace sharpkappa
             streamReader = new StreamReader(sslStream);
             streamWriter = new StreamWriter(sslStream) { NewLine = "\r\n", AutoFlush = true };
 
+            await streamWriter.WriteLineAsync("CAP REQ :twitch.tv/tags");
             await streamWriter.WriteLineAsync($"PASS {oauth}");
             await streamWriter.WriteLineAsync($"NICK {nick}");
             connected.SetResult(0);
@@ -62,10 +63,11 @@ namespace sharpkappa
                     await streamWriter.WriteLineAsync($"PONG {split[1]}");
                 }
 
-                if(split.Length > 1 && split[1] == "PRIVMSG") {
-                    //:messageSenderUsername!messageSenderUsername@messageSenderUsername.tmi.twitch.tv 
-                    string username = split[0].Substring(1, split[0].IndexOf("!")-1);
-                    string message = line.Substring(line.IndexOf(':', 1)+1);
+                if(split.Length > 1 && split[2] == "PRIVMSG") {
+                    Console.WriteLine(line);
+                    string username = split[1].Substring(1, split[1].IndexOf("!")-1);
+                    string privmsg = line.Substring(line.IndexOf("PRIVMSG"));
+                    string message = privmsg.Substring(privmsg.IndexOf(':', 1)+1);
                     ChatMessage twitchMessage = new ChatMessage(username, message, currentChannel, currentViewerCount, currentGame);
                     channelChatDatabase.appendMessage(twitchMessage);
                     //Console.WriteLine(twitchMessage.ToString());
