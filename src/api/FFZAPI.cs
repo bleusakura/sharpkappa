@@ -12,10 +12,10 @@ namespace sharpkappa {
         public static async Task<List<Emote>> getGlobalEmotes() {
             using(var httpClient = new HttpClient(hcHandle, false)) {
                 using(var response = await httpClient.GetAsync($"{baseApiUrl}/set/global")) {
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    JObject jObject = JObject.Parse(jsonString);
                     try {
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        JObject jObject = JObject.Parse(jsonString);
                         List<Emote> emoteList = new List<Emote>();
                         JArray emoticons = (JArray) jObject["sets"]["3"]["emoticons"];
                         foreach(var emote_data in emoticons) {
@@ -35,10 +35,10 @@ namespace sharpkappa {
         public static async Task<List<Emote>> getChannelEmotes(string channel) {
             using(var httpClient = new HttpClient(hcHandle, false)) {
                 using(var response = await httpClient.GetAsync($"{baseApiUrl}/room/{channel}")) {
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    JObject jObject = JObject.Parse(jsonString);
                     try {
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        JObject jObject = JObject.Parse(jsonString);
                         List<Emote> emoteList = new List<Emote>();
                         string set_id = (string) jObject["room"]["set"];
                         JArray emoticons = (JArray) jObject["sets"][set_id]["emoticons"];

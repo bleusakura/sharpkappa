@@ -29,7 +29,7 @@ namespace sharpkappa {
 
         public void generateChatDatabase(string channel) {
             openConnection();
-            string query = $@"CREATE TABLE IF NOT EXISTS {channel}(timestamp INTEGER, username TEXT, message TEXT, channel TEXT, game_name STRING, viewer_count INTEGER)";
+            string query = $@"CREATE TABLE IF NOT EXISTS '{channel}'(timestamp INTEGER, username TEXT, message TEXT, channel TEXT, game_name STRING, viewer_count INTEGER)";
             SQLiteCommand sqlcmd = new SQLiteCommand(query, connection);
             sqlcmd.ExecuteNonQuery();
             closeConnection();
@@ -39,7 +39,7 @@ namespace sharpkappa {
         public void appendMessage(ChatMessage chatmessage) {
             if(generated) {
                 openConnection();
-                string query = $"INSERT INTO {chatmessage.channel}(timestamp, username, message, channel, game_name, viewer_count) VALUES (@timestamp, @username, @message, @channel, @game_name, @viewer_count)";
+                string query = $"INSERT INTO '{chatmessage.channel}'(timestamp, username, message, channel, game_name, viewer_count) VALUES (@timestamp, @username, @message, @channel, @game_name, @viewer_count)";
                 SQLiteCommand sqlcmd = new SQLiteCommand(query, connection);
                 sqlcmd.Parameters.AddWithValue("@timestamp", chatmessage.timestamp);
                 sqlcmd.Parameters.AddWithValue("@username", chatmessage.username);

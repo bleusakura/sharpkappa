@@ -21,7 +21,8 @@ namespace sharpkappa
         private string channelId = "";
         private int currentViewerCount = 0;
         private string currentGame = "";
-        private ChatDatabase channelChatDatabase;
+        private ChatDatabase chatDatabase;
+        private EmoteDatabase emoteDatabase;
         private EmoteManager emoteManager;
 
         public SharpkappaBot(string nick, string oauth) {
@@ -51,6 +52,8 @@ namespace sharpkappa
             await refreshStreamsData(true);
             refreshStreamsData().SafeFireAndForget();
 
+            chatDatabase = new ChatDatabase(currentChannel);
+            emoteDatabase = new EmoteDatabase(currentChannel);
             emoteManager = new EmoteManager(currentChannel, channelId);
             await emoteManager.start();
 
@@ -64,13 +67,12 @@ namespace sharpkappa
                 }
 
                 if(split.Length > 1 && split[2] == "PRIVMSG") {
-                    Console.WriteLine(line);
                     string username = split[1].Substring(1, split[1].IndexOf("!")-1);
                     string privmsg = line.Substring(line.IndexOf("PRIVMSG"));
                     string message = privmsg.Substring(privmsg.IndexOf(':', 1)+1);
                     ChatMessage twitchMessage = new ChatMessage(username, message, currentChannel, currentViewerCount, currentGame);
-                    channelChatDatabase.appendMessage(twitchMessage);
-                    //Console.WriteLine(twitchMessage.ToString());
+                    chatDatabase.appendMessage(twitchMessage);
+                    emoteDatabase.incrementEmotes(currentChannel, twitchMessage, emoteManager);
                 }
             }
         }
@@ -84,7 +86,6 @@ namespace sharpkappa
             await connected.Task;
             await streamWriter.WriteLineAsync($"JOIN #{channel}");
             currentChannel = channel.ToLower();
-            channelChatDatabase = new ChatDatabase(currentChannel);
         }
 
         public async Task refreshStreamsData(bool prefetch=false) {

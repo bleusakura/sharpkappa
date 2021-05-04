@@ -45,10 +45,10 @@ namespace sharpkappa {
                 httpClient.Timeout = TimeSpan.FromSeconds(5);
 
                 using (var response = await httpClient.GetAsync($"https://api.twitch.tv/helix/streams?user_login={channel}")) {
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    JObject jsonObject = JObject.Parse(jsonString);
                     try {
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        JObject jsonObject = JObject.Parse(jsonString);
                         JToken jData = jsonObject["data"][0];
                         int viewer_count = (int) jData["viewer_count"];
                         string game_name = (string) jData["game_name"];
@@ -70,10 +70,10 @@ namespace sharpkappa {
         public static async Task<List<Emote>> getChannelEmotes(string channel_id = "0") {
             using(var httpClient = new HttpClient()) {
                 using(var response = await httpClient.GetAsync($"https://api.twitchemotes.com/api/v4/channels/{channel_id}")) {
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    JObject jObject = JObject.Parse(jsonString);
                     try {
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        JObject jObject = JObject.Parse(jsonString);
                         List<Emote> emoteList = new List<Emote>();
                         JArray emotes = (JArray) jObject["emotes"];
                         foreach(var emote_data in emotes) {

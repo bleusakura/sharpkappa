@@ -12,10 +12,10 @@ namespace sharpkappa {
         public static async Task<List<Emote>> getGlobalEmotes() {
             using(var httpClient = new HttpClient(hcHandle, false)) {
                 using(var response = await httpClient.GetAsync($"{baseApiUrl}/emotes/global")) {
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    JArray emoticons = JArray.Parse(jsonString);
                     try {
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        JArray emoticons = JArray.Parse(jsonString);
                         List<Emote> emoteList = new List<Emote>();
                         foreach(var emote_data in emoticons) {
                             Emote emote = new Emote((string) emote_data["id"], (string) emote_data["code"], "bttv");
@@ -34,10 +34,10 @@ namespace sharpkappa {
         public static async Task<List<Emote>> getChannelEmotes(string channel_id) {
             using(var httpClient = new HttpClient(hcHandle, false)) {
                 using(var response = await httpClient.GetAsync($"{baseApiUrl}/users/twitch/{channel_id}")) {
-                    response.EnsureSuccessStatusCode();
-                    string jsonString = await response.Content.ReadAsStringAsync();
-                    JObject jObject = JObject.Parse(jsonString);
                     try {
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        JObject jObject = JObject.Parse(jsonString);
                         List<Emote> emoteList = new List<Emote>();
                         JArray channelEmotes = (JArray) jObject["channelEmotes"];
                         JArray sharedEmotes = (JArray) jObject["sharedEmotes"];
