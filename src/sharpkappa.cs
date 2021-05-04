@@ -66,7 +66,7 @@ namespace sharpkappa
                     await streamWriter.WriteLineAsync($"PONG {split[1]}");
                 }
 
-                if(split.Length > 1 && split[2] == "PRIVMSG") {
+                if(split.Length > 3 && split[2] == "PRIVMSG") {
                     string username = split[1].Substring(1, split[1].IndexOf("!")-1);
                     string privmsg = line.Substring(line.IndexOf("PRIVMSG"));
                     string message = privmsg.Substring(privmsg.IndexOf(':', 1)+1);
