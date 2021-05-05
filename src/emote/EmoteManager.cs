@@ -40,8 +40,8 @@ namespace sharpkappa {
                 await fetchAllEmoteData();
             }
             while(true && !prefetch) {
-                await fetchAllEmoteData();
                 await Task.Delay(TimeSpan.FromMinutes(30));
+                await fetchAllEmoteData();
             }
         }
 

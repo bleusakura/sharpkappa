@@ -38,7 +38,31 @@ namespace sharpkappa {
             }
         }
 
-        public static async Task<Tuple<string, string, int>> getStreamsData(string channel) {
+        public static async Task<string> getUserData(string channel) {
+            using (var httpClient = new HttpClient(hcHandle, false)) {
+                httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);
+                httpClient.Timeout = TimeSpan.FromSeconds(5);
+
+                using (var response = await httpClient.GetAsync($"https://api.twitch.tv/helix/users?login={channel}")) {
+                    try {
+                        response.EnsureSuccessStatusCode();
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        JObject jsonObject = JObject.Parse(jsonString);
+                        JToken jData = jsonObject["data"][0];
+                        string id = (string) jData["id"];
+                        return id;
+                    }
+                    catch {
+                        string id = "";
+                        Console.WriteLine(DateTime.Now + $": Failed to get channel id from Twitch API for {channel}");
+                        return id;
+                    }
+                }
+            }
+        }
+
+        public static async Task<Tuple<string, int>> getStreamsData(string channel) {
             using (var httpClient = new HttpClient(hcHandle, false)) {
                 httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);
@@ -52,15 +76,13 @@ namespace sharpkappa {
                         JToken jData = jsonObject["data"][0];
                         int viewer_count = (int) jData["viewer_count"];
                         string game_name = (string) jData["game_name"];
-                        string user_id = (string) jData["user_id"];
-                        return (new Tuple<string, string, int>(user_id, game_name, viewer_count));
+                        return (new Tuple<string, int>(game_name, viewer_count));
                     }
                     catch {
                         int viewer_count = 0;
                         string game_name = "";
-                        string user_id = "";
-                        Console.WriteLine(DateTime.Now + ": Failed to get streams data from Twitch API");
-                        return (new Tuple<string, string, int>(user_id, game_name, viewer_count));
+                        Console.WriteLine(DateTime.Now + $": Failed to get streams data from Twitch API for {channel}");
+                        return (new Tuple<string, int>(game_name, viewer_count));
                     }
                 }
             }
@@ -83,7 +105,7 @@ namespace sharpkappa {
                         return emoteList;
                     }
                     catch {
-                        Console.WriteLine(DateTime.Now + ": Failed to get emote data from twitchemotes API");
+                        Console.WriteLine(DateTime.Now + $": Failed to get emote data from twitchemotes API for {channel_id}");
                         return new List<Emote>();
                     }
                 }

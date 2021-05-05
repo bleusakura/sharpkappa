@@ -25,7 +25,7 @@ namespace sharpkappa {
                         return emoteList;
                     }
                     catch {
-                        Console.WriteLine(DateTime.Now + ": Failed to get global emotes from FFZ API");
+                        Console.WriteLine(DateTime.Now + $": Failed to get global emotes from FFZ API");
                         return new List<Emote>();
                     }
                 }
@@ -49,7 +49,7 @@ namespace sharpkappa {
                         return emoteList;
                     }
                     catch {
-                        Console.WriteLine(DateTime.Now + ": Failed to get channel emotes from FFZ API");
+                        Console.WriteLine(DateTime.Now + $": Failed to get channel emotes from FFZ API for {channel}");
                         return new List<Emote>();
                     }
                 }

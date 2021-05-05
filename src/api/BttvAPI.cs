@@ -49,7 +49,7 @@ namespace sharpkappa {
                         return emoteList;
                     }
                     catch {
-                        Console.WriteLine(DateTime.Now + ": Failed to get channel emotes from Bttv API");
+                        Console.WriteLine(DateTime.Now + $": Failed to get channel emotes from Bttv API for {channel_id}");
                         return new List<Emote>();
                     }
                 }

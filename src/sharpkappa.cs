@@ -86,21 +86,20 @@ namespace sharpkappa
             await connected.Task;
             await streamWriter.WriteLineAsync($"JOIN #{channel}");
             currentChannel = channel.ToLower();
+            channelId = await TwitchAPI.getUserData(channel);
         }
 
         public async Task refreshStreamsData(bool prefetch=false) {
             if(prefetch) {
-                Tuple<string, string, int> streamData = await TwitchAPI.getStreamsData(currentChannel);
-                channelId = streamData.Item1;
-                currentGame = streamData.Item2;
-                currentViewerCount = streamData.Item3;
+                Tuple<string, int> streamData = await TwitchAPI.getStreamsData(currentChannel);
+                currentGame = streamData.Item1;
+                currentViewerCount = streamData.Item2;
             }
             while(true && !prefetch) {
-                Tuple<string, string, int> streamData = await TwitchAPI.getStreamsData(currentChannel);
-                channelId = streamData.Item1;
-                currentGame = streamData.Item2;
-                currentViewerCount = streamData.Item3;
                 await Task.Delay(TimeSpan.FromMinutes(2));
+                Tuple<string, int> streamData = await TwitchAPI.getStreamsData(currentChannel);
+                currentGame = streamData.Item1;
+                currentViewerCount = streamData.Item2;
             }
         }
     }
