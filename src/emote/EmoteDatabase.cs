@@ -31,9 +31,10 @@ namespace sharpkappa {
 
         public void incrementEmotes(string channel, ChatMessage message, EmoteManager emoteManager) {
             List<string> split_msg = new List<string>(message.message.Split(' '));
-            HashSet<Emote> emoteList = emoteManager.getEmoteList();
+            HashSet<Emote> emoteList = new HashSet<Emote>(emoteManager.getEmoteList());
             SQLiteCommand sqlcmd;
             string query;
+
             foreach(Emote emote in emoteList) {
                 int occurances = split_msg.Where(word => word == emote.name).Count();
                 if(occurances > 0) {

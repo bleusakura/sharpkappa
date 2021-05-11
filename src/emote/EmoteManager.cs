@@ -7,7 +7,6 @@ using System.Linq;
 namespace sharpkappa {
     class EmoteManager {
         private HashSet<Emote> emoteList;
-        private List<string> emoteStringList;
         private string channel;
         private string channel_id;
 
@@ -29,10 +28,6 @@ namespace sharpkappa {
             emoteList.UnionWith(await FFZAPI.getChannelEmotes(channel));
             emoteList.UnionWith(await BttvAPI.getGlobalEmotes());
             emoteList.UnionWith(await BttvAPI.getChannelEmotes(channel_id));
-            emoteStringList = new List<string>();
-            foreach(Emote emote in emoteList) {
-                emoteStringList.Add(emote.name);
-            }
         }
 
         public async Task refreshEmoteList(bool prefetch = false) {
@@ -47,10 +42,6 @@ namespace sharpkappa {
 
         public HashSet<Emote> getEmoteList() {
             return emoteList;
-        }
-
-        public List<string> getEmoteStringList() {
-            return emoteStringList;
         }
     }
 }

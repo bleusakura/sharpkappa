@@ -66,7 +66,7 @@ namespace sharpkappa {
             using (var httpClient = new HttpClient(hcHandle, false)) {
                 httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
                 httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);
-                httpClient.Timeout = TimeSpan.FromSeconds(5);
+                httpClient.Timeout = TimeSpan.FromSeconds(10);
 
                 using (var response = await httpClient.GetAsync($"https://api.twitch.tv/helix/streams?user_login={channel}")) {
                     try {
