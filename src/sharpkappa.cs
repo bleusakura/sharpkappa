@@ -67,14 +67,21 @@ namespace sharpkappa
                 }
 
                 if(split.Length > 3 && split[2] == "PRIVMSG") {
-                    string username = split[1].Substring(1, split[1].IndexOf("!")-1);
-                    string privmsg = line.Substring(line.IndexOf("PRIVMSG"));
-                    string message = privmsg.Substring(privmsg.IndexOf(':', 1)+1);
-                    ChatMessage twitchMessage = new ChatMessage(username, message, currentChannel, currentViewerCount, currentGame);
+                    ChatMessage twitchMessage = processIRCMessage(line, split);
                     chatDatabase.appendMessage(twitchMessage);
                     emoteDatabase.incrementEmotes(currentChannel, twitchMessage, emoteManager);
                 }
             }
+        }
+
+        public ChatMessage processIRCMessage(string line, string[] split) {
+            string tags = split[0];
+            string privmsg = line.Substring(line.IndexOf("PRIVMSG"));
+
+            string username = split[1].Substring(1, split[1].IndexOf("!")-1);
+            string message = privmsg.Substring(privmsg.IndexOf(':', 1)+1);
+            int subscriber = Int32.Parse(tags.Substring(tags.IndexOf("subscriber=")+11, 1));
+            return new ChatMessage(username, message, subscriber, currentChannel, currentViewerCount, currentGame);
         }
 
         public async Task sendMessage(string channel, string message) {

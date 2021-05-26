@@ -10,9 +10,9 @@ namespace sharpkappa {
         private static string baseApiUrl = "https://api.frankerfacez.com/v1";
 
         public static async Task<List<Emote>> getGlobalEmotes() {
-            using(var httpClient = new HttpClient(hcHandle, false)) {
-                using(var response = await httpClient.GetAsync($"{baseApiUrl}/set/global")) {
-                    try {
+            try {
+                using(var httpClient = new HttpClient(hcHandle, false)) {
+                    using(var response = await httpClient.GetAsync($"{baseApiUrl}/set/global")) {
                         response.EnsureSuccessStatusCode();
                         string jsonString = await response.Content.ReadAsStringAsync();
                         JObject jObject = JObject.Parse(jsonString);
@@ -24,18 +24,18 @@ namespace sharpkappa {
                         }
                         return emoteList;
                     }
-                    catch {
-                        Console.WriteLine(DateTime.Now + $": Failed to get global emotes from FFZ API");
-                        return new List<Emote>();
-                    }
                 }
+            }
+            catch {
+                Console.WriteLine(DateTime.Now + $": Failed to get global emotes from FFZ API");
+                return new List<Emote>();
             }
         }
 
         public static async Task<List<Emote>> getChannelEmotes(string channel) {
-            using(var httpClient = new HttpClient(hcHandle, false)) {
-                using(var response = await httpClient.GetAsync($"{baseApiUrl}/room/{channel}")) {
-                    try {
+            try {
+                using(var httpClient = new HttpClient(hcHandle, false)) {
+                    using(var response = await httpClient.GetAsync($"{baseApiUrl}/room/{channel}")) {
                         response.EnsureSuccessStatusCode();
                         string jsonString = await response.Content.ReadAsStringAsync();
                         JObject jObject = JObject.Parse(jsonString);
@@ -48,11 +48,11 @@ namespace sharpkappa {
                         }
                         return emoteList;
                     }
-                    catch {
-                        Console.WriteLine(DateTime.Now + $": Failed to get channel emotes from FFZ API for {channel}");
-                        return new List<Emote>();
-                    }
                 }
+            }
+            catch {
+                Console.WriteLine(DateTime.Now + $": Failed to get channel emotes from FFZ API for {channel}");
+                return new List<Emote>();
             }
         }
     }

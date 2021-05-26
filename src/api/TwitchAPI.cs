@@ -39,13 +39,13 @@ namespace sharpkappa {
         }
 
         public static async Task<string> getUserData(string channel) {
-            using (var httpClient = new HttpClient(hcHandle, false)) {
-                httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);
-                httpClient.Timeout = TimeSpan.FromSeconds(5);
+            try {
+                using (var httpClient = new HttpClient(hcHandle, false)) {
+                    httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
+                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);
+                    httpClient.Timeout = TimeSpan.FromSeconds(5);
 
-                using (var response = await httpClient.GetAsync($"https://api.twitch.tv/helix/users?login={channel}")) {
-                    try {
+                    using (var response = await httpClient.GetAsync($"https://api.twitch.tv/helix/users?login={channel}")) {
                         response.EnsureSuccessStatusCode();
                         string jsonString = await response.Content.ReadAsStringAsync();
                         JObject jsonObject = JObject.Parse(jsonString);
@@ -53,23 +53,23 @@ namespace sharpkappa {
                         string id = (string) jData["id"];
                         return id;
                     }
-                    catch {
-                        string id = "";
-                        Console.WriteLine(DateTime.Now + $": Failed to get channel id from Twitch API for {channel}");
-                        return id;
-                    }
                 }
+            }
+            catch {
+                string id = "";
+                Console.WriteLine(DateTime.Now + $": Failed to get channel id from Twitch API for {channel}");
+                return id;
             }
         }
 
         public static async Task<Tuple<string, int>> getStreamsData(string channel) {
-            using (var httpClient = new HttpClient(hcHandle, false)) {
-                httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);
-                httpClient.Timeout = TimeSpan.FromSeconds(10);
+            try {
+                using (var httpClient = new HttpClient(hcHandle, false)) {
+                    httpClient.DefaultRequestHeaders.Add("Client-ID", client_id);
+                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", access_token);
+                    httpClient.Timeout = TimeSpan.FromSeconds(10);
 
-                using (var response = await httpClient.GetAsync($"https://api.twitch.tv/helix/streams?user_login={channel}")) {
-                    try {
+                    using (var response = await httpClient.GetAsync($"https://api.twitch.tv/helix/streams?user_login={channel}")) {
                         response.EnsureSuccessStatusCode();
                         string jsonString = await response.Content.ReadAsStringAsync();
                         JObject jsonObject = JObject.Parse(jsonString);
@@ -78,21 +78,21 @@ namespace sharpkappa {
                         string game_name = (string) jData["game_name"];
                         return (new Tuple<string, int>(game_name, viewer_count));
                     }
-                    catch {
-                        int viewer_count = 0;
-                        string game_name = "";
-                        Console.WriteLine(DateTime.Now + $": Failed to get streams data from Twitch API for {channel}");
-                        return (new Tuple<string, int>(game_name, viewer_count));
-                    }
                 }
+            }
+            catch {
+                int viewer_count = 0;
+                string game_name = "";
+                Console.WriteLine(DateTime.Now + $": Failed to get streams data from Twitch API for {channel}");
+                return (new Tuple<string, int>(game_name, viewer_count));
             }
         }
 
         // unofficial api through twitchemotes.com, no new emote api from twitch since legacy atm
         public static async Task<List<Emote>> getChannelEmotes(string channel_id = "0") {
-            using(var httpClient = new HttpClient()) {
-                using(var response = await httpClient.GetAsync($"https://api.twitchemotes.com/api/v4/channels/{channel_id}")) {
-                    try {
+            try {
+                using(var httpClient = new HttpClient()) {
+                    using(var response = await httpClient.GetAsync($"https://api.twitchemotes.com/api/v4/channels/{channel_id}")) {
                         response.EnsureSuccessStatusCode();
                         string jsonString = await response.Content.ReadAsStringAsync();
                         JObject jObject = JObject.Parse(jsonString);
@@ -102,13 +102,14 @@ namespace sharpkappa {
                             Emote emote = new Emote((string) emote_data["id"], (string) emote_data["code"], "twitch");
                             emoteList.Add(emote);
                         }
+                        
                         return emoteList;
                     }
-                    catch {
-                        Console.WriteLine(DateTime.Now + $": Failed to get emote data from twitchemotes API for {channel_id}");
-                        return new List<Emote>();
-                    }
                 }
+            }
+            catch {
+                Console.WriteLine(DateTime.Now + $": Failed to get emote data from twitchemotes API for {channel_id}");
+                return new List<Emote>();
             }
         }
     }
