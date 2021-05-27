@@ -63,7 +63,7 @@ namespace sharpkappa
 
                 string[] split = line.Split(" ");
                 if(line.StartsWith("PING")) {
-                    await streamWriter.WriteLineAsync($"PONG {split[1]}");
+                    await streamWriter.WriteLineAsync($"PONG tmi.twitch.tv");
                 }
 
                 if(split.Length > 3 && split[2] == "PRIVMSG") {
